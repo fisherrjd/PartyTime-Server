@@ -11,5 +11,6 @@ class Drop(SQLModel, table=True):
     drop_party_id: int = Field(foreign_key="drop_party.id")
     item_name: str
     quantity: int
+    value: int  # Value in GP
 
     drop_party: "Drop_Party" = Relationship(back_populates="drops")

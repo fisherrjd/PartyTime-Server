@@ -2,6 +2,7 @@ from sqlmodel import create_engine, SQLModel, Session  # ty:ignore[unresolved-im
 
 # Import ALL your models here
 from models.drop_party import Drop_Party
+from models.drop import Drop
 
 DATABASE_URL = "sqlite:///database.db"
 engine = create_engine(DATABASE_URL)
