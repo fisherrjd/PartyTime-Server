@@ -1,6 +1,7 @@
 .db
 .direnv
 result*
+database.db 
 
 # python
 .mypy_cache
