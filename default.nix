@@ -7,7 +7,7 @@
     { }
 }:
 let
-  name = "PartyTime-Server-Java";
+  name = "PartyTime";
   pg = pkgs.postgresql_16.withPackages (p: with p; [ pgvector ]);
 
   tools = with pkgs; {
@@ -17,7 +17,7 @@ let
     ];
     java = [
       gradle
-      zulu25
+      zulu
     ];
     scripts = pkgs.lib.attrsets.attrValues scripts;
   };
@@ -35,4 +35,9 @@ in
 (env.overrideAttrs (_: {
   inherit name;
   NIXUP = "0.0.10";
+  PGPORT = "7070";
+  PGDATA = "${builtins.toString ./.}/.pg/${name}";
+  PGDATABASE = name;
+  PGUSER = name;
+  PGPASSWORD = name;
 })) // { inherit scripts; }
