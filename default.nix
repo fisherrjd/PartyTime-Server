@@ -1,0 +1,33 @@
+{ pkgs ? import
+    (fetchTarball {
+      name = "jpetrucciani-2025-12-13";
+      url = "https://github.com/jpetrucciani/nix/archive/195a5aebd288ee6934b80497b8ad277feffe5708.tar.gz";
+      sha256 = "0ip6789f5csrbmbfpsk416g0llfq09h66hav27agiz9svpf4rvsm";
+    })
+    { }
+}:
+let
+  name = "PartyTime-Server-Java";
+
+  tools = with pkgs; {
+    cli = [
+      jfmt
+      nixup
+    ];
+    java = [
+      gradle
+      zulu25
+    ];
+    scripts = pkgs.lib.attrsets.attrValues scripts;
+  };
+
+  scripts = with pkgs; { };
+  paths = pkgs.lib.flatten [ (builtins.attrValues tools) ];
+  env = pkgs.buildEnv {
+    inherit name paths; buildInputs = paths;
+  };
+in
+(env.overrideAttrs (_: {
+  inherit name;
+  NIXUP = "0.0.10";
+})) // { inherit scripts; }
