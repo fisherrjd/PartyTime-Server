@@ -8,6 +8,7 @@
 }:
 let
   name = "PartyTime-Server-Java";
+  pg = pkgs.postgresql_16.withPackages (p: with p; [ pgvector ]);
 
   tools = with pkgs; {
     cli = [
@@ -21,7 +22,11 @@ let
     scripts = pkgs.lib.attrsets.attrValues scripts;
   };
 
-  scripts = with pkgs; { };
+  scripts = with pkgs; {
+    pg = __pg { postgres = pg; };
+    pg_bootstrap = __pg_bootstrap { inherit name; postgres = pg; };
+    pg_shell = __pg_shell { inherit name; postgres = pg; };
+  };
   paths = pkgs.lib.flatten [ (builtins.attrValues tools) ];
   env = pkgs.buildEnv {
     inherit name paths; buildInputs = paths;
