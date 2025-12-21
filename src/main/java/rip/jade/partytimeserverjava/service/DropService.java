@@ -2,6 +2,7 @@ package rip.jade.partytimeserverjava.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,8 +26,14 @@ public class DropService {
     private final DropRepository dropRepository;
     private final DropPartyRepository dropPartyRepository;
 
-    private static final long DUPLICATE_WINDOW_MILLIS = 500; // 0.5 seconds
-    private static final long PARTY_TIMEOUT_MINUTES = 5; // 5 minutes
+    @Value("${party.duplicate-window-millis}")
+    private long duplicateWindowMillis;
+
+    @Value("${party.timeout-minutes}")
+    private long partyTimeoutMinutes;
+
+    @Value("${party.cleanup-interval-millis}")
+    private long cleanupIntervalMillis;
 
     @Transactional
     public DropResponse handleDrop(DropRequest request) {
@@ -69,12 +76,12 @@ public class DropService {
 
     private boolean hasPartyTimedOut(DropParty party, Instant now) {
         Duration timeSinceLastDrop = Duration.between(party.getLastDropAt(), now);
-        return timeSinceLastDrop.toMinutes() >= PARTY_TIMEOUT_MINUTES;
+        return timeSinceLastDrop.toMinutes() >= partyTimeoutMinutes;
     }
 
     private boolean isDuplicateDrop(DropParty party, Instant now) {
         Duration timeSinceLastDrop = Duration.between(party.getLastDropAt(), now);
-        return timeSinceLastDrop.toMillis() < DUPLICATE_WINDOW_MILLIS;
+        return timeSinceLastDrop.toMillis() < duplicateWindowMillis;
     }
 
     private DropResponse createPartyAndAddDrop(int world, DropRequest request, Instant now) {
@@ -196,14 +203,14 @@ public class DropService {
 
     /**
      * Cleanup inactive drop parties
-     * Runs every 2 minutes automatically
+     * Runs automatically at configured interval (default: every 2 minutes)
      * Can also be called manually via the cleanup endpoint
      */
     @Transactional
-    @Scheduled(fixedRate = 120000) // Every 2 minutes
+    @Scheduled(fixedRateString = "${party.cleanup-interval-millis}")
     public int cleanupInactiveParties() {
         Instant now = Instant.now();
-        Instant cutoffTime = now.minus(Duration.ofMinutes(PARTY_TIMEOUT_MINUTES));
+        Instant cutoffTime = now.minus(Duration.ofMinutes(partyTimeoutMinutes));
 
         // Find all active parties
         List<DropParty> activeParties = dropPartyRepository.findByIsActiveTrue();
