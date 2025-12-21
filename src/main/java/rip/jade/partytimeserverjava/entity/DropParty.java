@@ -9,7 +9,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "drop_party")
+@Table(name = "drop_party", indexes = {
+        @Index(name = "idx_world_active", columnList = "world, is_active"),
+        @Index(name = "idx_active_last_drop", columnList = "is_active, last_drop_at")
+})
 @Getter
 @Setter
 @NoArgsConstructor

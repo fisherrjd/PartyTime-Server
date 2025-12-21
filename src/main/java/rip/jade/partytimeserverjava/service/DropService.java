@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import rip.jade.partytimeserverjava.dto.DropPartyResponse;
 import rip.jade.partytimeserverjava.dto.DropRequest;
 import rip.jade.partytimeserverjava.dto.DropResponse;
@@ -27,6 +28,7 @@ public class DropService {
     private static final long DUPLICATE_WINDOW_MILLIS = 500; // 0.5 seconds
     private static final long PARTY_TIMEOUT_MINUTES = 5; // 5 minutes
 
+    @Transactional
     public DropResponse handleDrop(DropRequest request) {
         int world = request.getWorld();
         Instant now = Instant.now();
@@ -197,6 +199,7 @@ public class DropService {
      * Runs every 2 minutes automatically
      * Can also be called manually via the cleanup endpoint
      */
+    @Transactional
     @Scheduled(fixedRate = 120000) // Every 2 minutes
     public int cleanupInactiveParties() {
         Instant now = Instant.now();

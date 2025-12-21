@@ -3,14 +3,14 @@
 ## 🔴 High Priority
 
 ### Input Validation & Error Handling
-- [ ] Add validation annotations to DropRequest DTO (@Min, @Max, @Positive, @NotBlank)
-- [ ] Add @Valid annotation to DropsController endpoint
+- [x] Add validation annotations to DropRequest DTO (@Min, @Max, @Positive, @NotBlank)
+- [x] Add @Valid annotation to DropsController endpoint
 - [ ] Create GlobalExceptionHandler with @RestControllerAdvice for validation errors
 - [ ] Add exception handling for general errors in GlobalExceptionHandler
 
 ### Transaction Management
-- [ ] Add @Transactional to DropService.handleDrop() method
-- [ ] Add @Transactional to DropService.cleanupInactiveParties() method
+- [x] Add @Transactional to DropService.handleDrop() method
+- [x] Add @Transactional to DropService.cleanupInactiveParties() method
 
 ### Database Optimization
 - [ ] Add database indexes to DropParty entity (world/is_active, is_active/last_drop_at)
