@@ -23,6 +23,6 @@ public class DropRequest {
     @Min(value = 1, message = "Quantity must be at least 1")
     private int quantity;
 
-    @Min(value = 15000, message = "Value must be non-negative")
+    @Min(value = 15000, message = "Value must be over 15,000 gp")
     private int value;
 }
