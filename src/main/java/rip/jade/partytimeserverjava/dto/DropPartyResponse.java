@@ -20,3 +20,4 @@ public class DropPartyResponse {
     private Instant lastDropAt;
     private Integer dropCount;
 }
+

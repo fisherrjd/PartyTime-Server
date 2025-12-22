@@ -81,7 +81,7 @@ public class DropService {
 
     private boolean isDuplicateDrop(DropParty party, Instant now) {
         Duration timeSinceLastDrop = Duration.between(party.getLastDropAt(), now);
-        return timeSinceLastDrop.toMillis() < DUPLICATE_WINDOW_MILLIS;
+        return timeSinceLastDrop.toMillis() < duplicateWindowMillis;
     }
 
     private DropResponse createPartyAndAddDrop(int world, DropRequest request, Instant now) {
@@ -210,7 +210,7 @@ public class DropService {
     @Scheduled(fixedRate = 120000) // Every 2 minutes
     public int cleanupInactiveParties() {
         Instant now = Instant.now();
-        Instant cutoffTime = now.minus(Duration.ofMinutes(PARTY_TIMEOUT_MINUTES));
+        Instant cutoffTime = now.minus(Duration.ofMinutes(partyTimeoutMinutes));
 
         // Find all active parties
         List<DropParty> activeParties = dropPartyRepository.findByIsActiveTrue();
